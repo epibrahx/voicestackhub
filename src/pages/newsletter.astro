@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="The Voice Agent Stack Weekly – Newsletter | VoiceStackHub" description="One short weekly email with new voice and video agent tools, notable launches and pricing changes, plus one practical build tip. Free." path="/newsletter/">
+<section class="formpage">
+<h1>The Voice Agent Stack Weekly</h1>
+<p>One short email every week with the newest voice and video agent tools, notable launches and pricing changes across the stack, plus one practical build tip. Written for developers and founders shipping real-time voice and video agents. No spam, unsubscribe anytime.</p>
+<form id="f" class="form inline" novalidate>
+  <input name="email" type="email" required placeholder="you@company.com" aria-label="Email" />
+  <div class="hp" aria-hidden="true"><input name="company_site" tabindex="-1" autocomplete="off" /></div>
+  <button class="btn big" type="submit">Subscribe Free</button>
+</form>
+<p id="msg" class="msg" role="status"></p>
+</section>
+<script is:inline>
+document.getElementById('f').addEventListener('submit', async (e) => {
+  e.preventDefault(); const f = e.target, m = document.getElementById('msg'), b = f.querySelector('button');
+  if (!f.checkValidity()) { f.reportValidity(); return; }
+  b.disabled = true; m.className = 'msg'; m.textContent = 'Subscribing…';
+  try { const r = await fetch('/api/subscribe', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(Object.fromEntries(new FormData(f))) });
+    const j = await r.json().catch(() => ({}));
+    if (r.ok) { m.className = 'msg ok'; m.textContent = "You're subscribed! Watch your inbox for the next issue."; f.reset(); }
+    else { m.className = 'msg err'; m.textContent = j.error || 'Something went wrong. Please try again.'; }
+  } catch { m.className = 'msg err'; m.textContent = 'Network error. Please try again.'; }
+  b.disabled = false;
+});
+</script>
+</Base>

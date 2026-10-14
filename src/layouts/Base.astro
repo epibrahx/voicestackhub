@@ -1,0 +1,34 @@
+---
+import { SITE_URL, SITE_NAME } from '../../site.config.mjs';
+const { title, description, path = '/', ogType = 'website' } = Astro.props;
+const canonical = SITE_URL + path;
+const nav = [['/', 'Directory'], ['/submit/', 'Submit'], ['/newsletter/', 'Newsletter']];
+const cur = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={SITE_URL + '/og.svg'} />
+<meta name="twitter:card" content="summary" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+<header class="top"><div class="wrap nav">
+  <a class="brand" href="/"><span class="logo">◆</span> {SITE_NAME}</a>
+  <nav aria-label="Main">{nav.map(([h, l]) => <a href={h} class={(h === '/' ? (cur === '/' || cur.startsWith('/tools/')) : cur.startsWith(h)) ? 'active' : ''}>{l}</a>)}</nav>
+</div></header>
+<main class="wrap"><slot /></main>
+<footer class="foot"><div class="wrap">© {new Date().getFullYear()} {SITE_NAME} · The curated stack for real-time voice &amp; video AI agents · <a href="/submit/">Submit a tool</a> · <a href="/newsletter/">Newsletter</a></div></footer>
+</body>
+</html>

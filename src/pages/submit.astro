@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import { CATEGORIES } from '../../site.config.mjs';
+---
+<Base title="Submit Your Voice or Video AI Tool | VoiceStackHub" description="Built something for voice or video agents? Submit it to VoiceStackHub for a free listing, usually reviewed within a week." path="/submit/">
+<section class="formpage">
+<h1>Submit Your Voice or Video AI Tool</h1>
+<p>Built something for voice or video agents? Submit it here and we'll review and list it for free, usually within a week.</p>
+<form id="f" class="form" novalidate>
+  <label>Tool Name *<input name="toolName" required maxlength="100" /></label>
+  <label>Website URL *<input name="websiteUrl" type="url" required placeholder="https://" /></label>
+  <label>Category *<select name="category" required><option value="">Choose a category…</option>{CATEGORIES.map((c) => <option value={c}>{c}</option>)}</select></label>
+  <label>Short Description *<textarea name="shortDescription" required maxlength="500" rows="4"></textarea></label>
+  <label>Contact Email *<input name="contactEmail" type="email" required placeholder="you@company.com" /></label>
+  <div class="hp" aria-hidden="true"><label>Company website<input name="company_site" tabindex="-1" autocomplete="off" /></label></div>
+  <button class="btn big" type="submit">Submit for Free</button>
+  <p id="msg" class="msg" role="status"></p>
+</form>
+</section>
+<script is:inline>
+document.getElementById('f').addEventListener('submit', async (e) => {
+  e.preventDefault(); const f = e.target, m = document.getElementById('msg'), b = f.querySelector('button');
+  if (!f.checkValidity()) { f.reportValidity(); return; }
+  b.disabled = true; m.className = 'msg'; m.textContent = 'Submitting…';
+  try { const r = await fetch('/api/submit', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(Object.fromEntries(new FormData(f))) });
+    const j = await r.json().catch(() => ({}));
+    if (r.ok) { m.className = 'msg ok'; m.textContent = 'Thanks! Your tool was submitted. We usually review within a week.'; f.reset(); }
+    else { m.className = 'msg err'; m.textContent = j.error || 'Something went wrong. Please try again.'; }
+  } catch { m.className = 'msg err'; m.textContent = 'Network error. Please try again.'; }
+  b.disabled = false;
+});
+</script>
+</Base>

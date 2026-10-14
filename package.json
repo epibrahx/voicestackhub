@@ -1,0 +1,19 @@
+{
+  "name": "voicestackhub",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/fetch-tools.mjs && astro build",
+    "dev": "astro dev",
+    "preview": "wrangler pages dev dist"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "astro": "^5.18.2"
+  },
+  "devDependencies": {
+    "wrangler": "^3.114.17"
+  }
+}

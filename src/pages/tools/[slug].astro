@@ -1,0 +1,19 @@
+---
+import Base from '../../layouts/Base.astro';
+import tools from '../../data/tools.json';
+export function getStaticPaths() { return tools.map((t) => ({ params: { slug: t.slug }, props: { t } })); }
+const { t } = Astro.props;
+const desc = `${t.name}: ${t.tagline}. Pricing, who it's for, and an honest pros & cons review on VoiceStackHub.`.slice(0, 300);
+---
+<Base title={`${t.name} – ${t.category} | VoiceStackHub`} description={desc} path={`/tools/${t.slug}/`} ogType="article">
+<article class="detail">
+  <p class="crumb"><a href="/">Directory</a> / {t.category}</p>
+  <h1>{t.name}</h1>
+  <p class="lead">{t.tagline}</p>
+  <div class="meta"><span class="tag">{t.category}</span><span class="price">{t.pricing}</span></div>
+  <a class="btn big" href={t.url} target="_blank" rel="noopener">Visit {t.name} ↗</a>
+  <h2>Who it's for</h2><p class="pre">{t.targetUsers}</p>
+  <h2>Review: pros &amp; cons</h2><p class="pre">{t.review}</p>
+  <p class="back"><a href="/">← Back to all tools</a></p>
+</article>
+</Base>

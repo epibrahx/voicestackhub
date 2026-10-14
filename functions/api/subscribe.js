@@ -1,0 +1,12 @@
+import { json, isEmail, rateLimited, readBody, createRecord } from '../../lib/shared.js';
+export async function onRequestPost({ request, env }) {
+  const b = await readBody(request);
+  if (b.company_site) return json(200, { ok: true });
+  if (rateLimited(request, 'subscribe', 5)) return json(429, { error: 'Too many attempts. Please try again later.' });
+  const email = typeof b.email === 'string' ? b.email.trim().toLowerCase() : '';
+  if (!isEmail(email)) return json(400, { error: 'Please enter a valid email address.' });
+  const r = await createRecord(env, 'Subscribers', { Email: email });
+  if (!r.ok) return json(502, { error: 'Could not subscribe right now. Please try again later.' });
+  return json(200, { ok: true, id: r.id });
+}
+export const onRequest = () => json(405, { error: 'Method not allowed' });
