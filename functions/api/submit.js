@@ -1,8 +1,9 @@
-import { CATEGORIES, json, isEmail, isUrl, rateLimited, readBody, createRecord } from '../../lib/shared.js';
+import { CATEGORIES, json, isEmail, isUrl, rateLimited, readBody, createRecord, verifyTurnstile } from '../../lib/shared.js';
 export async function onRequestPost({ request, env }) {
   const b = await readBody(request);
   if (b.company_site) return json(200, { ok: true }); // honeypot: pretend success, store nothing
   if (rateLimited(request, 'submit', 5)) return json(429, { error: 'Too many submissions. Please try again later.' });
+  if (!(await verifyTurnstile(request, env, b['cf-turnstile-response']))) return json(403, { error: 'Human verification failed. Please complete the check above the button and try again.' });
   const s = (v, n) => (typeof v === 'string' ? v.trim().slice(0, n) : '');
   const f = { toolName: s(b.toolName, 100), websiteUrl: s(b.websiteUrl, 500), category: s(b.category, 60), shortDescription: s(b.shortDescription, 500), contactEmail: s(b.contactEmail, 254) };
   if (!f.toolName || !f.websiteUrl || !f.category || !f.shortDescription || !f.contactEmail) return json(400, { error: 'Please fill in all required fields.' });

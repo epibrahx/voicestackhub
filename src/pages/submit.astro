@@ -13,10 +13,12 @@ import { CATEGORIES } from '../../site.config.mjs';
   <label>Short Description *<textarea name="shortDescription" required maxlength="500" rows="4"></textarea></label>
   <label>Contact Email *<input name="contactEmail" type="email" required placeholder="you@company.com" /></label>
   <div class="hp" aria-hidden="true"><label>Company website<input name="company_site" tabindex="-1" autocomplete="off" /></label></div>
+  <div class="cf-turnstile" data-sitekey="0x4AAAAAAFWyR150USiFauAQ"></div>
   <button class="btn big" type="submit">Submit for Free</button>
   <p id="msg" class="msg" role="status"></p>
 </form>
 </section>
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script is:inline>
 document.getElementById('f').addEventListener('submit', async (e) => {
   e.preventDefault(); const f = e.target, m = document.getElementById('msg'), b = f.querySelector('button');
@@ -27,6 +29,7 @@ document.getElementById('f').addEventListener('submit', async (e) => {
     if (r.ok) { m.className = 'msg ok'; m.textContent = 'Thanks! Your tool was submitted. We usually review within a week.'; f.reset(); }
     else { m.className = 'msg err'; m.textContent = j.error || 'Something went wrong. Please try again.'; }
   } catch { m.className = 'msg err'; m.textContent = 'Network error. Please try again.'; }
+  if (window.turnstile) turnstile.reset();
   b.disabled = false;
 });
 </script>

@@ -8,10 +8,12 @@ import Base from '../layouts/Base.astro';
 <form id="f" class="form inline" novalidate>
   <input name="email" type="email" required placeholder="you@company.com" aria-label="Email" />
   <div class="hp" aria-hidden="true"><input name="company_site" tabindex="-1" autocomplete="off" /></div>
+  <div class="cf-turnstile" data-sitekey="0x4AAAAAAFWyR150USiFauAQ"></div>
   <button class="btn big" type="submit">Subscribe Free</button>
 </form>
 <p id="msg" class="msg" role="status"></p>
 </section>
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script is:inline>
 document.getElementById('f').addEventListener('submit', async (e) => {
   e.preventDefault(); const f = e.target, m = document.getElementById('msg'), b = f.querySelector('button');
@@ -22,6 +24,7 @@ document.getElementById('f').addEventListener('submit', async (e) => {
     if (r.ok) { m.className = 'msg ok'; m.textContent = "You're subscribed! Watch your inbox for the next issue."; f.reset(); }
     else { m.className = 'msg err'; m.textContent = j.error || 'Something went wrong. Please try again.'; }
   } catch { m.className = 'msg err'; m.textContent = 'Network error. Please try again.'; }
+  if (window.turnstile) turnstile.reset();
   b.disabled = false;
 });
 </script>
