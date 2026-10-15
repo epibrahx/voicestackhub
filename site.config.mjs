@@ -10,4 +10,4 @@ export const CATEGORIES = [
 ];
 
 // Replace with real cloud.umami.is website id before deploy. Do not ship the placeholder.
-export const UMAMI_WEBSITE_ID = 'UMAMI_WEBSITE_ID';
+export const UMAMI_WEBSITE_ID = '058da68e-bbf3-42b9-9a32-ec03becd6daa';
