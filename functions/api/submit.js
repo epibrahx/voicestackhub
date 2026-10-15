@@ -1,4 +1,4 @@
-import { CATEGORIES, json, isEmail, isUrl, rateLimited, readBody, createRecord, verifyTurnstile } from '../../lib/shared.js';
+import { CATEGORIES, json, isEmail, isUrl, rateLimited, readBody, createRecord, verifyTurnstile, pickUtmFields } from '../../lib/shared.js';
 export async function onRequestPost({ request, env }) {
   const b = await readBody(request);
   if (b.hp_token) return json(200, { ok: true }); // honeypot: silent discard, no id
@@ -10,7 +10,7 @@ export async function onRequestPost({ request, env }) {
   if (!isUrl(f.websiteUrl)) return json(400, { error: 'Please enter a valid website URL (starting with https://).' });
   if (!isEmail(f.contactEmail)) return json(400, { error: 'Please enter a valid email address.' });
   if (!CATEGORIES.includes(f.category)) return json(400, { error: 'Please choose a valid category.' });
-  const r = await createRecord(env, 'Submissions', { 'Tool Name': f.toolName, 'Website URL': f.websiteUrl, 'Category': f.category, 'Short Description': f.shortDescription, 'Contact Email': f.contactEmail });
+  const r = await createRecord(env, 'Submissions', { 'Tool Name': f.toolName, 'Website URL': f.websiteUrl, 'Category': f.category, 'Short Description': f.shortDescription, 'Contact Email': f.contactEmail, ...pickUtmFields(b) });
   if (!r.ok) return json(502, { error: 'Could not save right now. Please try again later.' });
   return json(200, { ok: true, id: r.id });
 }

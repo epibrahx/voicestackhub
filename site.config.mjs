@@ -8,3 +8,6 @@ export const CATEGORIES = [
   'Frameworks & Infrastructure',
   'Testing & Voice Apps',
 ];
+
+// Replace with real cloud.umami.is website id before deploy. Do not ship the placeholder.
+export const UMAMI_WEBSITE_ID = 'UMAMI_WEBSITE_ID';
