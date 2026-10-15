@@ -19,7 +19,7 @@ document.getElementById('f').addEventListener('submit', async (e) => {
   e.preventDefault(); const f = e.target, m = document.getElementById('msg'), b = f.querySelector('button');
   if (!f.checkValidity()) { f.reportValidity(); return; }
   b.disabled = true; m.className = 'msg'; m.textContent = 'Subscribing…';
-  try { const r = await fetch('/api/subscribe', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(Object.fromEntries(new FormData(f))) });
+  try { const r = await fetch('/api/subscribe', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...Object.fromEntries(new FormData(f)), ...(window.getUtmPayload ? window.getUtmPayload() : {}) }) });
     const j = await r.json().catch(() => ({}));
     if (r.ok && j.id) { m.className = 'msg ok'; m.textContent = "You're subscribed! Watch your inbox for the next issue."; f.reset(); }
     else if (r.ok) { m.className = 'msg err'; m.textContent = 'Could not complete that. Please refresh and fill only the email field.'; }

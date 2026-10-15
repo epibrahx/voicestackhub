@@ -24,7 +24,7 @@ document.getElementById('f').addEventListener('submit', async (e) => {
   e.preventDefault(); const f = e.target, m = document.getElementById('msg'), b = f.querySelector('button');
   if (!f.checkValidity()) { f.reportValidity(); return; }
   b.disabled = true; m.className = 'msg'; m.textContent = 'Submitting…';
-  try { const r = await fetch('/api/submit', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(Object.fromEntries(new FormData(f))) });
+  try { const r = await fetch('/api/submit', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...Object.fromEntries(new FormData(f)), ...(window.getUtmPayload ? window.getUtmPayload() : {}) }) });
     const j = await r.json().catch(() => ({}));
     if (r.ok && j.id) { m.className = 'msg ok'; m.textContent = 'Thanks! Your tool was submitted. We usually review within a week.'; f.reset(); }
     else if (r.ok) { m.className = 'msg err'; m.textContent = 'Could not complete that. Please refresh and fill only the intended fields.'; }
