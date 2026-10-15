@@ -12,7 +12,7 @@ import { CATEGORIES } from '../../site.config.mjs';
   <label>Category *<select name="category" required><option value="">Choose a category…</option>{CATEGORIES.map((c) => <option value={c}>{c}</option>)}</select></label>
   <label>Short Description *<textarea name="shortDescription" required maxlength="500" rows="4"></textarea></label>
   <label>Contact Email *<input name="contactEmail" type="email" required placeholder="you@company.com" /></label>
-  <div class="hp" aria-hidden="true"><label>Company website<input name="company_site" tabindex="-1" autocomplete="off" /></label></div>
+  <div class="hp" aria-hidden="true"><label>Leave blank<input name="hp_token" tabindex="-1" autocomplete="off" /></label></div>
   <div class="cf-turnstile" data-sitekey="0x4AAAAAAFWyR150USiFauAQ"></div>
   <button class="btn big" type="submit">Submit for Free</button>
   <p id="msg" class="msg" role="status"></p>
@@ -26,7 +26,8 @@ document.getElementById('f').addEventListener('submit', async (e) => {
   b.disabled = true; m.className = 'msg'; m.textContent = 'Submitting…';
   try { const r = await fetch('/api/submit', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(Object.fromEntries(new FormData(f))) });
     const j = await r.json().catch(() => ({}));
-    if (r.ok) { m.className = 'msg ok'; m.textContent = 'Thanks! Your tool was submitted. We usually review within a week.'; f.reset(); }
+    if (r.ok && j.id) { m.className = 'msg ok'; m.textContent = 'Thanks! Your tool was submitted. We usually review within a week.'; f.reset(); }
+    else if (r.ok) { m.className = 'msg err'; m.textContent = 'Could not complete that. Please refresh and fill only the intended fields.'; }
     else { m.className = 'msg err'; m.textContent = j.error || 'Something went wrong. Please try again.'; }
   } catch { m.className = 'msg err'; m.textContent = 'Network error. Please try again.'; }
   if (window.turnstile) turnstile.reset();
