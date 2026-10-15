@@ -1,7 +1,7 @@
 import { CATEGORIES, json, isEmail, isUrl, rateLimited, readBody, createRecord, verifyTurnstile } from '../../lib/shared.js';
 export async function onRequestPost({ request, env }) {
   const b = await readBody(request);
-  if (b.company_site) return json(200, { ok: true }); // honeypot: pretend success, store nothing
+  if (b.hp_token) return json(200, { ok: true }); // honeypot: silent discard, no id
   if (rateLimited(request, 'submit', 5)) return json(429, { error: 'Too many submissions. Please try again later.' });
   if (!(await verifyTurnstile(request, env, b['cf-turnstile-response']))) return json(403, { error: 'Human verification failed. Please complete the check above the button and try again.' });
   const s = (v, n) => (typeof v === 'string' ? v.trim().slice(0, n) : '');
