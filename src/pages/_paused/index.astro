@@ -1,0 +1,41 @@
+---
+import Base from '../layouts/Base.astro';
+import tools from '../data/tools.json';
+import { CATEGORIES } from '../../site.config.mjs';
+---
+<Base title="VoiceStackHub – The Voice & Video AI Agent Stack, Curated" description="Compare agent platforms, speech APIs (STT/TTS), video avatars and infrastructure for building real-time voice and video AI agents. Verified listings, updated weekly.">
+<section class="hero">
+  <h1>The Voice &amp; Video AI Agent Stack, Curated</h1>
+  <p>Compare the agent platforms, speech APIs, avatars, and infrastructure you need to build real-time voice and video agents. Every listing is verified and updated weekly.</p>
+  <input id="q" type="search" placeholder={`Search ${tools.length} tools…`} aria-label="Search tools" />
+  <div class="chips" role="group" aria-label="Filter by category">
+    <button class="chip on" data-cat="">All</button>
+    {CATEGORIES.map((c) => <button class="chip" data-cat={c}>{c}</button>)}
+  </div>
+</section>
+<h2 class="sr">All tools</h2>
+<p class="count"><span id="n">{tools.length}</span> tools</p>
+<div class="grid" id="grid">
+{tools.map((t) => (
+  <article class="card" data-cat={t.category} data-text={`${t.name} ${t.tagline} ${t.category} ${t.pricing} ${t.targetUsers}`.toLowerCase()}>
+    <span class="tag">{t.category}</span>
+    <h3><a href={`/tools/${t.slug}/`}>{t.name}</a></h3>
+    <p class="tl">{t.tagline}</p>
+    <p class="price">{t.pricing}</p>
+    <div class="acts"><a class="btn" href={t.url} target="_blank" rel="noopener">Visit ↗</a><a class="more" href={`/tools/${t.slug}/`}>Details →</a></div>
+  </article>
+))}
+</div>
+<p id="empty" class="empty" hidden>No tools match. <a href="/submit/">Submit one?</a></p>
+<script is:inline>
+(() => {
+  const q = document.getElementById('q'), cards = [...document.querySelectorAll('.card')], chips = [...document.querySelectorAll('.chip')];
+  let cat = '';
+  const run = () => { const s = q.value.trim().toLowerCase(); let n = 0;
+    cards.forEach(c => { const ok = (!cat || c.dataset.cat === cat) && (!s || c.dataset.text.includes(s)); c.hidden = !ok; if (ok) n++; });
+    document.getElementById('n').textContent = n; document.getElementById('empty').hidden = n > 0; };
+  q.addEventListener('input', run);
+  chips.forEach(b => b.addEventListener('click', () => { cat = b.dataset.cat; chips.forEach(x => x.classList.toggle('on', x === b)); run(); }));
+})();
+</script>
+</Base>
