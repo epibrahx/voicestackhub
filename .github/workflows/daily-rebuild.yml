@@ -1,7 +1,8 @@
 name: Daily rebuild (Cloudflare Pages deploy hook)
 on:
-  schedule:
-    - cron: '0 0 * * *'   # every day 00:00 UTC = 08:00 Beijing time
+  # Scheduled rebuild paused while the site is offline. Restore the cron block when relaunching.
+  # schedule:
+  #   - cron: '0 0 * * *'   # every day 00:00 UTC = 08:00 Beijing time
   workflow_dispatch: {}    # manual "Run workflow" button
 jobs:
   trigger:
